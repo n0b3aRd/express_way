@@ -55,13 +55,13 @@ if (empty($_SESSION['user'])) {
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse"
            aria-expanded="true" aria-controls="collapse">
             <i class="fas fa-fw fa-cog"></i>
-            <span>Riders</span>
+            <span>Employees</span>
         </a>
         <div id="collapse" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Rider Option:</h6>
-                <a class="collapse-item" href="admin.create.rider.php">New Rider</a>
-                <a class="collapse-item" href="admin.rider.list.php">Riders list</a>
+                <h6 class="collapse-header">Employee Option:</h6>
+                <a class="collapse-item" href="admin.create.rider.php">New Employee</a>
+                <a class="collapse-item" href="admin.rider.list.php">Employee list</a>
             </div>
         </div>
     </li>

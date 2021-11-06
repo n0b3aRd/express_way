@@ -18,6 +18,7 @@ class LoginController
         $query = "SELECT * FROM users WHERE email = '{$email}' LIMIT 1";
         $result = $this->database->query($query);
 
+
         if ($result) {
             if ($result->num_rows == 1) {
                 $user = $result->fetch_array();
