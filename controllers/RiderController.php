@@ -1,6 +1,6 @@
 <?php
 
-require_once ('database.php');
+require_once('Database.php');
 
 class RiderController
 {
@@ -56,8 +56,51 @@ class RiderController
 
             echo 'Query failed. <br>';
         }
-
+        $this->database->close();
         return $riders;
+    }
+
+    public function editRider($id)
+    {
+        $query = "SELECT * FROM users where id = {$id}";
+        $result = $this->database->query($query);
+
+        if ($result->num_rows == 1) {
+            $rider = $result->fetch_assoc();
+            $this->database->close();
+            return $rider;
+        } else {
+            return [
+                'status' => 'error',
+                'msg' => 'Something went wrong.'
+            ];
+        }
+    }
+
+    public function update($rider)
+    {
+        $msg = '';
+        $status = '';
+
+        $now = date('Y-m-d H:i:s', time());
+        $id = $rider['id'];
+
+        foreach ($rider as $key => $value) {
+            $rider[$key] = $this->database->escape_string($value);
+        }
+
+        $query = "UPDATE users SET fname = '{$rider['fname']}', lname = '{$rider['lname']}', nic = '{$rider['nic']}', mobile = '{$rider['mobile']}', address = '{$rider['address']}', email = '{$rider['email']}', updated_at = '{$now}' WHERE id = '{$id}'";
+        $result = $this->database->query($query);
+        $this->database->close();
+        if ($result) {
+            $status = 'success';
+            $msg = 'Employee updated successfully.';
+        } else {
+            $status = 'error';
+            $msg = 'Something went wrong.';
+        }
+
+        return ['status' => $status, 'msg' => $msg];
     }
 
     public function deleteRider($id)

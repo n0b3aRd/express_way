@@ -1,24 +1,15 @@
 <?php
 
 require_once('controllers/JobController.php');
+require_once('controllers/RiderController.php');
 
 $msg = '';
 $status = '';
 $job = [];
-$option = 'New';
-$btn = ['val' => 'save', 'text' => 'Save'];
+$employee = 'N/A';
 
 /**
- * save job
- */
-if (isset($_POST['save'])) {
-    $job_controller = new JobController();
-    $result = $job_controller->store($_POST['job']);
-    //$job = [];
-}
-
-/**
- * edit job(show exsisting data of job )
+ * show job(show exsisting data of job )
  */
 if (isset($_GET['id'])) {
     $job_controller = new JobController();
@@ -28,18 +19,20 @@ if (isset($_GET['id'])) {
         $status = $job['status'];
         $msg = $job['msg'];
         $job = [];
+    } else {
+        //get assign employee
+        if ($job['rider_id'] != null) {
+            $rider_controller = new RiderController();
+            $rider = $rider_controller->editRider($job['rider_id']);
+
+            if (count($rider) > 3) {
+                $employee = $rider['fname'] . ' ' . $rider['lname'];
+            }
+        }
     }
-    $option = 'Update';
-    $btn = ['val' => 'update', 'text' => 'Update'];
+    $option = 'Show';
 }
 
-/**
- * update job
- */
-if (isset($_POST['update'])) {
-    $job_controller = new JobController();
-    $result = $job_controller->update($_POST['job']);
-}
 
 /**
  * set result to show
@@ -102,7 +95,17 @@ if (!empty($result)) {
                 <div class="card shadow mb-4">
                     <!-- Card Header - Dropdown -->
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 font-weight-bold text-primary">Enter Job Details</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Job ID: <?php echo 'E01' . str_pad($job['id'], 4, '0', STR_PAD_LEFT); ?></h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Job Status:
+                            <?php if ($job['status'] == 'New') { ?>
+                                <span class="badge badge-pill badge-success ml-1">New</span>
+                            <?php } elseif ($job['status'] == 'Pending') { ?>
+                                <span class="badge badge-pill badge-info ml-1">Pending</span>
+                            <?php } else { ?>
+                                <span class="badge badge-pill badge-danger ml-1">Complete</span>
+                            <?php } ?>
+                        </h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Employee: <?php echo $employee; ?></h6>
                     </div>
                     <form action="admin.create.job.php" method="post" id="job_create">
                         <!-- Card Body -->
@@ -121,31 +124,31 @@ if (!empty($result)) {
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">From</label>
-                                        <input type="text" id="from" class="form-control" required
+                                        <input type="text" id="from" class="form-control" disabled
                                                value="<?php if (!empty($job)) echo $job['from_location']; ?>"
                                                name="job[from_location]" placeholder="Pick up location">
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Sender Name</label>
-                                        <input type="text" id="sender" class="form-control" required
+                                        <input type="text" id="sender" class="form-control" disabled
                                                value="<?php if (!empty($job)) echo $job['sender']; ?>"
                                                name="job[sender]" placeholder="Name of the sender">
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Address</label>
-                                        <input type="text" id="from_address" class="form-control" required
+                                        <input type="text" id="from_address" class="form-control" disabled
                                                value="<?php if (!empty($job)) echo $job['from_address']; ?>"
                                                name="job[from_address]" placeholder="Pick up address">
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Pick Up Date</label>
-                                        <input type="datetime-local" id="pickup_date" class="form-control" required
+                                        <input type="datetime-local" id="pickup_date" class="form-control" disabled
                                                value="<?php if (!empty($job)) echo date('Y-m-d\TH:i:s', strtotime($job['collect_date'])); ?>"
                                                name="job[collect_date]" placeholder="Pick up before">
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Sender Mobile</label>
-                                        <input type="text" id="sender_mobile" class="form-control" required
+                                        <input type="text" id="sender_mobile" class="form-control" disabled
                                                value="<?php if (!empty($job)) echo $job['sender_mobile']; ?>"
                                                name="job[sender_mobile]" placeholder="Sender's contact number">
                                     </div>
@@ -153,31 +156,31 @@ if (!empty($result)) {
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">To</label>
-                                        <input type="text" id="to" class="form-control" required
+                                        <input type="text" id="to" class="form-control" disabled
                                                value="<?php if (!empty($job)) echo $job['to_location']; ?>"
                                                name="job[to_location]" placeholder="Delivery location">
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Receiver Name</label>
-                                        <input type="text" id="reciver" class="form-control" required
+                                        <input type="text" id="reciver" class="form-control" disabled
                                                value="<?php if (!empty($job)) echo $job['receiver']; ?>"
                                                name="job[receiver]" placeholder="Name of the receiver">
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Address</label>
-                                        <input type="text" id="to_address" class="form-control" required
+                                        <input type="text" id="to_address" class="form-control" disabled
                                                value="<?php if (!empty($job)) echo $job['to_address']; ?>"
                                                name="job[to_address]" placeholder="Delivery address">
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Delivery Date</label>
-                                        <input type="datetime-local" id="delever_date" class="form-control" required
+                                        <input type="datetime-local" id="delever_date" class="form-control" disabled
                                                value="<?php if (!empty($job)) echo date('Y-m-d\TH:i:s', strtotime($job['deliver_date'])); ?>"
                                                name="job[deliver_date]" placeholder="Deliver on">
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Receiver Mobile</label>
-                                        <input type="text" id="reciver_mobile" class="form-control" required
+                                        <input type="text" id="reciver_mobile" class="form-control" disabled
                                                value="<?php if (!empty($job)) echo $job['receiver_mobile']; ?>"
                                                name="job[receiver_mobile]" placeholder="Receiver's contact number">
                                     </div>
@@ -188,10 +191,17 @@ if (!empty($result)) {
 
                         </div>
                         <!-- Card footer -->
-                        <div class="card-footer text-right">
-                            <div class="">
-                                <button class="btn btn-sm btn-danger px-4 mr-2" type="reset" value="reset">Clear</button>
-                                <button class="btn btn-sm btn-success px-4" type="submit" name="<?php echo $btn['val'] ?>"><?php echo $btn['text'] ?></button>
+                        <div class="card-footer">
+                            <div class="row justify-content-between">
+                                <div>
+                                    <button class="btn btn-sm btn-primary px-4 list" type="reset" value="reset">Back to list</button>
+                                </div>
+                                <div>
+                                    <?php if ($job['status'] != 'Complete') { ?>
+                                        <button class="btn btn-sm btn-warning px-4 edit" type="reset" value="reset">Edit</button>
+                                    <?php } ?>
+                                    <button class="btn btn-sm btn-danger px-4 delete" type="reset" value="reset">Delete</button>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -218,7 +228,10 @@ if (!empty($result)) {
 </a>
 
 <!-- Logout Modal-->
-<?php require_once ('./genaral_layout/logout.model.php') ?>
+<?php
+require_once ('./genaral_layout/logout.model.php');
+require_once('./genaral_layout/delete.model.php');
+?>
 
 <!-- Bootstrap core JavaScript-->
 <script src="./assets/vendor/jquery/jquery.min.js"></script>
@@ -229,20 +242,32 @@ if (!empty($result)) {
 
 <!-- Custom scripts for all pages-->
 <script src="./assets/js/sb-admin-2.min.js"></script>
-<script src="./assets/js/validator/jquery-1.11.1.js"></script>
-<script src="./assets/js/validator/jquery.validate.js"></script>
 
 <script>
     $(document).ready(function () {
-        $('#job_create').validate();
         //set nav active state
         $('.nav-item .collapse-item').removeClass('active');
-        $('.collapse').removeClass('show');
+        $('.collapse').collapse('hide');
         $('#jobs_nav').addClass('active');
-        <?php if (empty($job)) { ?>
-        $('#new_job_nav').addClass('active');
-        <?php } ?>
-        $('#collapseTwo').addClass('show');
+        $('#collapseTwo').collapse('show');
+    });
+
+    var id = '<?php echo $job['id']; ?>';
+    var status = '<?php echo ($job['status'] == 'Complete') ? "complete" : "pending"; ?>'
+
+    $('.edit').on('click', function () {
+        window.location.href = 'admin.create.job.php?id='+id;
+    });
+
+    $('.delete').on('click', function () {
+        $('#delete_id').attr('name', 'job');
+        $('#delete_id').attr('value', id);
+        $('#deleteModel form').attr('action', './admin.job.list.php?status='+status);
+        $('#deleteModel').modal('show');
+    });
+
+    $('.list').on('click', function () {
+        window.location.href = 'admin.job.list.php?status='+status;
     });
 </script>
 </body>

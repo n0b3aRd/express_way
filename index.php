@@ -1,6 +1,6 @@
 <?php
 
-require_once ('loginController.php');
+require_once('controllers/LoginController.php');
 
 $result = [];
 if (isset($_POST['login'])) {
@@ -54,7 +54,11 @@ if (!empty($result)) {
                 <div class="card-body p-0">
                     <!-- Nested Row within Card Body -->
                     <div class="row">
-                        <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                        <div class="col-lg-6 d-none d-lg-block">
+                            <div class="m-5 pt-5">
+                                <img src="./assets/img/login.svg" alt="login_img" style="width: 25rem">
+                            </div>
+                        </div>
                         <div class="col-lg-6">
                             <div class="p-5">
                                 <div class="text-center pt-lg-5">

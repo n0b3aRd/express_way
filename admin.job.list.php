@@ -1,26 +1,28 @@
 <?php
 
-require_once('controllers/RiderController.php');
+require_once('controllers/JobController.php');
 
 $msg = '';
 $status = '';
+$page = ($_GET['status'] == 'pending') ? 'Pending' : 'Complete';
 
 /**
- * delete riders
+ * delete job
  */
 if (isset($_POST['delete'])) {
 
-    if (isset($_POST['rider'])) {
-        $rider_controller = new RiderController();
-        $result = $rider_controller->deleteRider($_POST['rider']);
+    if (isset($_POST['job'])) {
+        $job_controller = new JobController();
+        $result = $job_controller->delete($_POST['job']);
     }
 
 }
+
 /**
- *get rider list
+ *get job list
  */
-$rider_controller = new RiderController();
-$riders = $rider_controller->getRiders();
+$job_controller = new JobController();
+$jobs = $job_controller->getJobList($_GET['status']);
 
 /**
  * set result to show
@@ -47,8 +49,8 @@ if (!empty($result)) {
     <!-- Custom fonts for this template-->
     <link href="./assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
-            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-            rel="stylesheet">
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="./assets/css/sb-admin-2.min.css" rel="stylesheet">
@@ -62,8 +64,7 @@ if (!empty($result)) {
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <?php
-    require_once('./admin_layout/admin.sidebar.php') ?>
+    <?php require_once ('./admin_layout/admin.sidebar.php') ?>
     <!-- End of Sidebar -->
 
     <!-- Content Wrapper -->
@@ -73,20 +74,19 @@ if (!empty($result)) {
         <div id="content">
 
             <!-- Topbar -->
-            <?php
-            require_once('./admin_layout/admin.topbar.php') ?>
+            <?php require_once ('./admin_layout/admin.topbar.php') ?>
             <!-- End of Topbar -->
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <h1 class="h3 mb-4 text-gray-800">Employee List</h1>
+                <h1 class="h3 mb-4 text-gray-800"><?php echo $page?> List</h1>
 
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">All Employee</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">All <?php echo $page?> Jobs</h6>
                     </div>
                     <div class="card-body">
 
@@ -100,39 +100,47 @@ if (!empty($result)) {
                         <?php } ?>
 
                         <div class="table-responsive">
-                            <table class="table table-sm table-striped" id="dataTable" width="100%" cellspacing="0">
+                            <table class="table table-striped table-sm" id="dataTable" width="100%" cellspacing="0">
                                 <thead>
                                 <tr>
-                                    <th>EMP ID</th>
-                                    <th>Name</th>
-                                    <th>NIC</th>
-                                    <th>Mobile</th>
-                                    <th>Address</th>
-                                    <th>action</th>
+                                    <th>Job ID</th>
+                                    <th>From</th>
+                                    <th>Pick Up At</th>
+                                    <th>To</th>
+                                    <th>Deliver On</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <?php
-                                foreach ($riders as $rider) { ?>
+
+                                <?php foreach ($jobs as $job) { ?>
                                     <tr>
                                         <td><?php
-                                            echo 'EMP' . str_pad($rider['id'], 4, '0', STR_PAD_LEFT) ?></td>
+                                            echo 'E01' . str_pad($job['id'], 4, '0', STR_PAD_LEFT); ?></td>
                                         <td><?php
-                                            echo $rider['fname'] . ' ' . $rider['lname'] ?></td>
+                                            echo $job['from_location']; ?></td>
                                         <td><?php
-                                            echo $rider['nic'] ?></td>
+                                            echo date('Y-m-d | H:i A', strtotime($job['collect_date'])) ?></td>
                                         <td><?php
-                                            echo $rider['mobile'] ?></td>
+                                            echo $job['to_location']; ?></td>
                                         <td><?php
-                                            echo $rider['address'] ?></td>
+                                            echo date('Y-m-d | H:i A', strtotime($job['deliver_date'])) ?></td>
                                         <td class="text-center">
-                                            <button class="btn btn-sm btn-outline-warning edit" data-id="<?php echo $rider['id']; ?>"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-sm btn-outline-danger delete" data-id="<?php echo $rider['id']; ?>"><i class="fas fa-trash-alt"></i></button>
+                                            <?php if ($job['status'] == 'New') { ?>
+                                                <span class="badge badge-pill badge-success">New</span>
+                                            <?php } elseif ($job['status'] == 'Pending') { ?>
+                                                <span class="badge badge-pill badge-info">Pending</span>
+                                            <?php } else { ?>
+                                                <span class="badge badge-pill badge-danger">Complete</span>
+                                            <?php } ?>
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn btn-outline-secondary show_job" data-id="<?php echo $job['id']; ?>"><i class="fas fa-eye"></i></button>
                                         </td>
                                     </tr>
+                                <?php } ?>
 
-                                <?php
-                                } ?>
                                 </tbody>
                             </table>
                         </div>
@@ -146,8 +154,7 @@ if (!empty($result)) {
         <!-- End of Main Content -->
 
         <!-- Footer -->
-        <?php
-        require_once('./admin_layout/admin.footer.php') ?>
+        <?php require_once ('./admin_layout/admin.footer.php') ?>
         <!-- End of Footer -->
 
     </div>
@@ -163,9 +170,9 @@ if (!empty($result)) {
 
 <!-- Logout Modal-->
 <?php
-require_once('./genaral_layout/logout.model.php');
-require_once('./genaral_layout/delete.model.php');
+require_once ('./genaral_layout/logout.model.php');
 ?>
+
 
 <!-- Bootstrap core JavaScript-->
 <script src="./assets/vendor/jquery/jquery.min.js"></script>
@@ -181,30 +188,25 @@ require_once('./genaral_layout/delete.model.php');
 <script src="./assets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('#dataTable').DataTable();
 
         //set nav active state
         $('.nav-item .collapse-item').removeClass('active');
         $('.collapse').collapse('hide');
-        $('#employee_nav').addClass('active');
-        $('#rider_list_nav').addClass('active');
-        $('#collapse').collapse('show');
+        $('#jobs_nav').addClass('active');
+        <?php if ($_GET['status'] == 'pending') { ?>
+        $('#pending_job_nav').addClass('active');
+        <?php } else { ?>
+        $('#complete_job_nav').addClass('active');
+        <?php } ?>
+        $('#collapseTwo').collapse('show');
     });
 
-    $('.delete').on('click', function () {
+    $('.show_job').on('click', function () {
         let id = $(this).data('id');
-        $('#delete_id').attr('name', 'rider');
-        $('#delete_id').attr('value', id);
-        $('#deleteModel form').attr('action', './admin.rider.list.php');
-        $('#deleteModel').modal('show');
+        window.location.href = 'admin.show.job.php?id='+id;
     });
-
-    $('.edit').on('click', function () {
-        let id = $(this).data('id');
-        window.location.href = 'admin.create.rider.php?id='+id;
-    });
-
 </script>
 
 </body>

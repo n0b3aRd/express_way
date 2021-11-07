@@ -1,6 +1,7 @@
 <?php
-
+//$user = $_SESSION['user'];
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,7 +23,6 @@
 
     <!-- Custom styles for this template-->
     <link href="./assets/css/sb-admin-2.min.css" rel="stylesheet">
-    <link href="./assets/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 </head>
 
@@ -32,7 +32,7 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <?php require_once ('./admin_layout/admin.sidebar.php') ?>
+    <?php require_once ('./rider_layout/rider.sidebar.php') ?>
     <!-- End of Sidebar -->
 
     <!-- Content Wrapper -->
@@ -42,38 +42,38 @@
         <div id="content">
 
             <!-- Topbar -->
-            <?php require_once ('./admin_layout/admin.topbar.php') ?>
+            <?php require_once ('./rider_layout/rider.topbar.php') ?>
             <!-- End of Topbar -->
 
             <!-- Begin Page Content -->
             <div class="container">
 
                 <!-- Page Heading -->
-                <h1 class="h3 mb-4 text-gray-800">Pending List</h1>
+                <h1 class="h3 mb-4 text-gray-800">My Account</h1>
 
-                <!-- DataTales Example -->
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">All Pending Jobs</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Position</th>
-                                    <th>Office</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <form action="" method="" id="">
+                                <!-- Card Body -->
+                                <div class="card-body text-center ">
+                                    <div class="mb-3">
+                                        <img src="./assets/img/undraw_profile_2.svg" alt="user" style="width: 12rem">
+                                    </div>
+                                    <h3><?php echo 'EMP' . str_pad($user['id'], 4, '0', STR_PAD_LEFT) ?></h3>
+                                    <p class="h5 text-dark"><?php echo $user['fname'] . ' ' . $user['lname']; ?></p>
+                                    <p class="mb-0"><i class="fas fa-address-card mr-2"></i><?php echo $user['nic'] ?></p>
+                                    <p class="mb-0"><i class="fas fa-mobile-alt mr-2"></i><?php echo $user['mobile'] ?></p>
+                                    <p class="text-primary"><i class="fas fa-at mr-2"></i><?php echo $user['email'] ?></p>
+                                    <p class="font-italic "><?php echo $user['address'] ?></p>
+                                </div>
+                                <!-- Card footer -->
+                            </form>
                         </div>
                     </div>
                 </div>
-                <!--table end-->
+
             </div>
             <!-- /.container-fluid -->
 
@@ -81,7 +81,7 @@
         <!-- End of Main Content -->
 
         <!-- Footer -->
-        <?php require_once ('./admin_layout/admin.footer.php') ?>
+        <?php require_once ('./rider_layout/rider.footer.php') ?>
         <!-- End of Footer -->
 
     </div>
@@ -108,15 +108,14 @@
 <!-- Custom scripts for all pages-->
 <script src="./assets/js/sb-admin-2.min.js"></script>
 
-<script src="./assets/vendor/datatables/jquery.dataTables.min.js"></script>
-<script src="./assets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
 <script>
-    $(document).ready(function() {
-        $('#dataTable').DataTable();
-    });
+    $(document).ready(function () {
+        $('.nav-item .collapse-item').removeClass('active');
+        $('.collapse').removeClass('show');
+        $('#my_account_nav').addClass('active');
+    })
 </script>
-
 </body>
 
 </html>
+

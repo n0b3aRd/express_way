@@ -1,10 +1,12 @@
 <?php
 
-require_once ('RiderController.php');
+require_once('controllers/RiderController.php');
 
 $msg = '';
 $status = '';
 $rider = [];
+$option = 'New';
+$btn = ['val' => 'save', 'text' => 'Save'];
 /**
  * save rider
  */
@@ -21,6 +23,41 @@ if (isset($_POST['save']) && empty($rider)) {
 
     $rider_controller = new RiderController();
     $result = $rider_controller->store($rider);
+    $rider = [];
+}
+
+/**
+ * edit rider(show exsisting data of rider )
+ */
+if (isset($_GET['id'])) {
+    $rider_controller = new RiderController();
+    $rider = $rider_controller->editRider($_GET['id']);
+
+    if (count($rider) < 3) {
+        $status = $rider['status'];
+        $msg = $rider['msg'];
+        $rider = [];
+    }
+    $option = 'Update';
+    $btn = ['val' => 'update', 'text' => 'Update'];
+}
+
+/**
+ * update rider
+ */
+if (isset($_POST['update'])) {
+    $rider = [
+        'id' => $_POST['id'],
+        'fname' => $_POST['fname'],
+        'lname' => $_POST['lname'],
+        'email' => $_POST['email'],
+        'nic' => $_POST['nic'],
+        'mobile' => $_POST['mobile'],
+        'address' => $_POST['address'],
+    ];
+
+    $rider_controller = new RiderController();
+    $result = $rider_controller->update($rider);
 }
 
 /**
@@ -80,7 +117,7 @@ if (!empty($result)) {
             <div class="container">
 
                 <!-- Page Heading -->
-                <h1 class="h3 mb-4 text-gray-800">New Employee</h1>
+                <h1 class="h3 mb-4 text-gray-800"><?php echo $option; ?> Employee</h1>
 
                 <div class="card shadow mb-4">
                     <!-- Card Header - Dropdown -->
@@ -103,44 +140,53 @@ if (!empty($result)) {
                         <div class="form-group">
                             <label for="exampleInputEmail1">First Name</label>
                             <input type="text" name="fname" class="form-control" required
+                                   value="<?php if (!empty($rider)) echo $rider['fname']; ?>"
                                    id="fname" placeholder="First name of the employee">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Last Name</label>
                             <input type="text" name="lname" class="form-control" required
+                                   value="<?php if (!empty($rider)) echo $rider['lname']; ?>"
                                    id="lname" placeholder="Last name of the employee">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Email address</label>
                             <input type="email" name="email" class="form-control" required
+                                   value="<?php if (!empty($rider)) echo $rider['email']; ?>"
                                    id="email" placeholder="Email address of the employee">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">NIC</label>
                             <input type="text" name="nic" class="form-control" required
+                                   value="<?php if (!empty($rider)) echo $rider['nic']; ?>"
                                    id="nic" placeholder="NIC of the employee">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Mobile</label>
                             <input type="text" name="mobile" class="form-control" required
+                                   value="<?php if (!empty($rider)) echo $rider['mobile']; ?>"
                                    id="mobile" placeholder="Mobile number of the employee">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Address</label>
                             <input type="text" name="address" class="form-control" required
+                                   value="<?php if (!empty($rider)) echo $rider['address']; ?>"
                                    id="address" placeholder="Address of the employee">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group <?php if (!empty($rider)) echo 'd-none'; ?>">
                             <label for="exampleInputEmail1">Password</label>
                             <input type="text" name="password" class="form-control" readonly
                                    id="password" placeholder="Account Password of the employee">
                         </div>
+
+                        <input type="hidden" name="id" value="<?php if (!empty($rider)) echo $rider['id']; ?>">
+
                     </div>
                     <!-- Card footer -->
                     <div class="card-footer text-right">
-                        <div class="">
-                            <button class="btn btn-danger px-4 mr-2" type="reset">Clear</button>
-                            <button class="btn btn-success px-4" type="submit" name="save">Save</button>
+                        <div class="text-right">
+                            <button class="btn btn-sm btn-danger px-4 mr-2" type="reset" value="reset">Clear</button>
+                            <button class="btn btn-sm btn-success px-4" type="submit" name="<?php echo $btn['val'] ?>"><?php echo $btn['text'] ?></button>
                         </div>
                     </div>
                     </form>
@@ -184,12 +230,21 @@ if (!empty($result)) {
 <script>
     $(document).ready(function () {
         $('#employee_create').validate();
-    })
+
+        //set nav active state
+        $('.nav-item .collapse-item').removeClass('active');
+        $('.collapse').removeClass('show');
+        $('#employee_nav').addClass('active');
+        <?php if (empty($rider)) { ?>
+        $('#new_rider_nav').addClass('active');
+        <?php } ?>
+        $('#collapse').addClass('show');
+    });
 
     $('#nic').keyup(function () {
         let val = $(this).val();
         $('#password').val(val);
-    })
+    });
 </script>
 
 </body>

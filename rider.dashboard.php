@@ -3,9 +3,10 @@
 require_once ('controllers/DashboardController.php');
 
 $dashboard = new DashboardController();
-$data = $dashboard->getAdminData();
+$data = $dashboard->getRiderData();
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,7 +37,7 @@ $data = $dashboard->getAdminData();
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <?php require_once ('./admin_layout/admin.sidebar.php') ?>
+    <?php require_once ('./rider_layout/rider.sidebar.php') ?>
     <!-- End of Sidebar -->
 
     <!-- Content Wrapper -->
@@ -46,7 +47,7 @@ $data = $dashboard->getAdminData();
         <div id="content">
 
             <!-- Topbar -->
-            <?php require_once ('./admin_layout/admin.topbar.php') ?>
+            <?php require_once ('./rider_layout/rider.topbar.php') ?>
             <!-- End of Topbar -->
 
             <!-- Begin Page Content -->
@@ -56,24 +57,7 @@ $data = $dashboard->getAdminData();
                 <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
 
                 <div class="row">
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-primary shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                            Total Employees</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $data['employees'] ?></div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-users fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-left-success shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
@@ -90,13 +74,13 @@ $data = $dashboard->getAdminData();
                         </div>
                     </div>
 
-                    <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-left-info shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                            Pending Jobs</div>
+                                            My Pending Jobs</div>
                                         <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $data['pending_jobs'] ?></div>
                                     </div>
                                     <div class="col-auto">
@@ -107,13 +91,13 @@ $data = $dashboard->getAdminData();
                         </div>
                     </div>
 
-                    <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-left-danger shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                            Complete Jobs</div>
+                                            My Complete Jobs</div>
                                         <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $data['complete_jobs'] ?></div>
                                     </div>
                                     <div class="col-auto">
@@ -133,7 +117,7 @@ $data = $dashboard->getAdminData();
         <!-- End of Main Content -->
 
         <!-- Footer -->
-        <?php require_once ('./admin_layout/admin.footer.php') ?>
+        <?php require_once ('./rider_layout/rider.footer.php') ?>
         <!-- End of Footer -->
 
     </div>
@@ -170,3 +154,4 @@ $data = $dashboard->getAdminData();
 </body>
 
 </html>
+

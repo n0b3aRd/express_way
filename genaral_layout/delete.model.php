@@ -1,9 +1,5 @@
 <?php
 
-require_once ('RiderController.php');
-
-
-
 ?>
 <!-- Logout Modal-->
 <div class="modal fade" id="deleteModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -19,7 +15,7 @@ require_once ('RiderController.php');
             <div class="modal-body">Do you really want to do this ?</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <form action="genaral_layout/delete.model.php" method="post">
+                <form action="" method="post">
                     <input type="hidden" name="id" id="delete_id">
                     <button class="btn btn-danger" name="delete">Delete</button>
                 </form>

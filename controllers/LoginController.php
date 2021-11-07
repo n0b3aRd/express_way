@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once ('database.php');
+require_once('Database.php');
 
 class LoginController
 {
@@ -29,7 +29,7 @@ class LoginController
                     if ($user['is_admin'] == 1){
                         header('Location:admin.dashboard.php');
                     } else {
-                        //rider dashboard
+                        header('Location:rider.dashboard.php');
                     }
                 } else {
                     $er_msg = 'Invalid password.';
