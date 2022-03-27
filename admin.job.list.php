@@ -104,6 +104,7 @@ if (!empty($result)) {
                                 <thead>
                                 <tr>
                                     <th>Job ID</th>
+                                    <th>Employee ID</th>
                                     <th>From</th>
                                     <th>Pick Up At</th>
                                     <th>To</th>
@@ -118,6 +119,13 @@ if (!empty($result)) {
                                     <tr>
                                         <td><?php
                                             echo 'E01' . str_pad($job['id'], 4, '0', STR_PAD_LEFT); ?></td>
+                                        <td><?php
+                                            if ($job['rider_id'] != null){
+                                                echo 'EMP' . str_pad($job['rider_id'], 4, '0', STR_PAD_LEFT);
+                                            } else {
+                                                echo 'N/A';
+                                            }
+                                             ?></td>
                                         <td><?php
                                             echo $job['from_location']; ?></td>
                                         <td><?php
