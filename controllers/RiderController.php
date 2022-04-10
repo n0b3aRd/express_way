@@ -122,6 +122,53 @@ class RiderController
 
     }
 
+    public function changePassword(array $password)
+    {
+        $status = 'error';
+        $er_msg = '';
+        $query = "SELECT * FROM users WHERE id = '{$password['rider_id']}' LIMIT 1";
+        $result = $this->database->query($query);
+
+        if ($result) {
+            if ($result->num_rows == 1) {
+                $user = $result->fetch_array();
+                //check current password
+                if (password_verify($password['current_pw'], $user['password'])) {
+                    //check new and confirm same
+                    if ($password['new_pw'] == $password['confirm_pw']) {
+                        //check length
+                        if (strlen($password['new_pw']) >= 5) {
+                            //change password
+                            $new_password = password_hash($password['new_pw'], PASSWORD_DEFAULT);
+                            $query = "UPDATE users SET password = '{$new_password}' WHERE id = '{$password['rider_id']}'";
+                            $result = $this->database->query($query);
+                            $this->database->close();
+                            if ($result) {
+                                $status = 'success';
+                                $er_msg = 'Password changed successfully.';
+                            } else {
+                                $er_msg = 'Something went wrong.';
+                            }
+                        } else {
+                            $er_msg = 'Password should have at least 5 characters.';
+                        }
+
+                    } else {
+                        $er_msg = 'New password and Confirm password miss match.';
+                    }
+                } else {
+                    $er_msg = 'Current password is invalid.';
+                }
+            } else {
+                $er_msg = 'User not found.';
+            }
+        } else {
+            $er_msg = 'Something went wrong.';
+        }
+
+        return ['status' => $status, 'msg' => $er_msg];
+    }
+
 }
 
 

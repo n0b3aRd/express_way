@@ -1,5 +1,35 @@
 <?php
 //$user = $_SESSION['user'];
+
+require_once('controllers/RiderController.php');
+
+$msg = '';
+$status = '';
+
+/**
+ * change password
+ */
+if (isset($_POST['save'])) {
+    $password = [
+        'rider_id' => $_POST['rider_id'],
+        'current_pw' => $_POST['current_pw'],
+        'new_pw' => $_POST['new_pw'],
+        'confirm_pw' => $_POST['confirm_pw'],
+    ];
+
+    $rider_controller = new RiderController();
+    $result = $rider_controller->changePassword($password);
+    $password = [];
+}
+
+/**
+ * set result to show
+ */
+if (!empty($result)) {
+    $status = $result['status'];
+    $msg = $result['msg'];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -55,21 +85,59 @@
                     <div class="col-md-6 offset-md-3">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
-                            <form action="" method="" id="">
                                 <!-- Card Body -->
-                                <div class="card-body text-center ">
-                                    <div class="mb-3">
+                                <div class="card-body">
+                                    <div class="mb-3 text-center">
                                         <img src="./assets/img/undraw_profile_2.svg" alt="user" style="width: 12rem">
                                     </div>
-                                    <h3><?php echo 'EMP' . str_pad($user['id'], 4, '0', STR_PAD_LEFT) ?></h3>
-                                    <p class="h5 text-dark"><?php echo $user['fname'] . ' ' . $user['lname']; ?></p>
-                                    <p class="mb-0"><i class="fas fa-address-card mr-2"></i><?php echo $user['nic'] ?></p>
-                                    <p class="mb-0"><i class="fas fa-mobile-alt mr-2"></i><?php echo $user['mobile'] ?></p>
-                                    <p class="text-primary"><i class="fas fa-at mr-2"></i><?php echo $user['email'] ?></p>
-                                    <p class="font-italic "><?php echo $user['address'] ?></p>
+                                    <div id="details_div" class="text-center" style="display: <?php if(!empty($msg)) echo 'none'; ?>;">
+                                        <h3><?php echo 'EMP' . str_pad($user['id'], 4, '0', STR_PAD_LEFT) ?></h3>
+                                        <p class="h5 text-dark"><?php echo $user['fname'] . ' ' . $user['lname']; ?></p>
+                                        <p class="mb-0"><i class="fas fa-address-card mr-2"></i><?php echo $user['nic'] ?></p>
+                                        <p class="mb-0"><i class="fas fa-mobile-alt mr-2"></i><?php echo $user['mobile'] ?></p>
+                                        <p class="text-primary"><i class="fas fa-at mr-2"></i><?php echo $user['email'] ?></p>
+                                        <p class="font-italic "><?php echo $user['address'] ?></p>
+                                        <button class="btn btn-primary mt-3" id="change_pw">Change Password</button>
+                                    </div>
+                                    <div id="change_pw_div" style="display: <?php if(empty($msg)) echo 'none'; ?>;">
+                                        <form action="rider.account.php" method="post" id="change_pw_form">
+
+                                            <?php if ($msg != '') { ?>
+                                                <div class="alert alert-dismissible fade show <?php if ($status == 'error') { echo 'alert-danger'; } else { echo 'alert-success';} ?> " role="alert">
+                                                    <?php echo $msg; ?>
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                            <?php } ?>
+
+                                            <div class="form-group px-5">
+                                                <label for="exampleInputEmail1">Current Password</label>
+                                                <input type="password" name="current_pw" class="form-control" required
+                                                       id="current_pw" placeholder="">
+                                            </div>
+                                            <div class="form-group px-5">
+                                                <label for="exampleInputEmail1">New Password</label>
+                                                <input type="password" name="new_pw" class="form-control" required
+                                                       minlength="5"
+                                                       id="new_pw" placeholder="">
+                                            </div>
+                                            <div class="form-group px-5">
+                                                <label for="exampleInputEmail1">Confirm Password</label>
+                                                <input type="password" name="confirm_pw" class="form-control" required
+                                                       minlength="5"
+                                                       id="confirm_pw" placeholder="">
+                                            </div>
+                                            <input type="hidden" name="rider_id" value="<?php echo $user['id']; ?>">
+                                            <div class="form-group px-5 text-center">
+                                                <button class="btn btn-secondary" id="cancel_btn" type="reset">Cancel</button>
+                                                <button class="btn btn-primary" type="submit" name="save">Submit</button>
+                                            </div>
+                                        </form>
+                                    </div>
+
                                 </div>
                                 <!-- Card footer -->
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -107,12 +175,27 @@
 
 <!-- Custom scripts for all pages-->
 <script src="./assets/js/sb-admin-2.min.js"></script>
+<script src="./assets/js/validator/jquery-1.11.1.js"></script>
+<script src="./assets/js/validator/jquery.validate.js"></script>
 
 <script>
     $(document).ready(function () {
         $('.nav-item .collapse-item').removeClass('active');
         $('.collapse').removeClass('show');
         $('#my_account_nav').addClass('active');
+
+        $('#change_pw').on('click', function () {
+            $('#details_div').hide();
+            $('#change_pw_div').show();
+        });
+
+        $('#cancel_btn').on('click', function () {
+            $('#change_pw_div').hide();
+            $('#details_div').show();
+        })
+
+        $('#change_pw_form').validate();
+
     })
 </script>
 </body>

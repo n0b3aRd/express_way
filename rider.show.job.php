@@ -205,6 +205,7 @@ if (!empty($result)) {
                             </div>
 
                             <input type="hidden" name="job[id]" value="<?php if (!empty($job)) echo $job['id']; ?>">
+                            <input type="hidden" id="btn_val" value=" ">
 
                         </div>
                         <!-- Card footer -->
@@ -215,9 +216,9 @@ if (!empty($result)) {
                                 </div>
                                 <div>
                                     <?php if ($job['status'] == 'New') { ?>
-                                        <button class="btn btn-sm btn-success px-4 " type="submit" name="get_job">Get Job</button>
+                                        <button class="btn btn-sm btn-success px-4 btnGet" type="submit" name="get_job">Get Job</button>
                                     <?php } elseif ($job['status'] == 'Pending') { ?>
-                                    <button class="btn btn-sm btn-success px-4 " type="submit" name="job_done">Job Done</button>
+                                    <button class="btn btn-sm btn-success px-4 btnDone" type="submit" name="job_done">Job Done</button>
                                     <?php } ?>
                                 </div>
                             </div>
@@ -248,7 +249,10 @@ if (!empty($result)) {
 </a>
 
 <!-- Logout Modal-->
-<?php require_once ('./genaral_layout/logout.model.php') ?>
+<?php
+require_once ('./genaral_layout/logout.model.php');
+require_once('./genaral_layout/confirm.model.php');
+?>
 
 <!-- Bootstrap core JavaScript-->
 <script src="./assets/vendor/jquery/jquery.min.js"></script>
@@ -278,6 +282,26 @@ if (!empty($result)) {
 
     $('.list').on('click', function () {
         window.location.href = 'rider.jobs.list.php?page='+page;
+    });
+
+    //get job
+    $('.btnGet').on('click', function (e) {
+        e.preventDefault();
+        $('.confirm').data('btn', 'get_job');
+        $('#confirmModel').modal('show');
+    });
+
+    //gob done
+    $('.btnDone').on('click', function (e) {
+        e.preventDefault();
+        $('.confirm').data('btn', 'job_done');
+        $('#confirmModel').modal('show');
+    });
+
+
+    $('.confirm').on('click', function () {
+        $('#btn_val').attr('name', $('.confirm').data('btn'));
+        $('#job_show').submit();
     });
 </script>
 </body>
