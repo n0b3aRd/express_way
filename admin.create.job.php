@@ -234,7 +234,27 @@ if (!empty($result)) {
 
 <script>
     $(document).ready(function () {
-        $('#job_create').validate();
+        $.validator.addMethod(
+            "regex",
+            function(value, element, regexp) {
+                var re = new RegExp(regexp);
+                return this.optional(element) || re.test(value);
+            },
+            "Please enter valid mobile number."
+        );
+
+        $('#job_create').validate({
+            rules: {
+                "job[receiver_mobile]": {
+                    required: true,
+                    regex: /^(?:7|0|(?:\+94))[0-9]{8,9}$/
+                },
+                "job[sender_mobile]": {
+                    required: true,
+                    regex: /^(?:7|0|(?:\+94))[0-9]{8,9}$/
+                }
+            }
+        });
         //set nav active state
         $('.nav-item .collapse-item').removeClass('active');
         $('.collapse').removeClass('show');

@@ -229,7 +229,35 @@ if (!empty($result)) {
 
 <script>
     $(document).ready(function () {
-        $('#employee_create').validate();
+        $.validator.addMethod(
+            "regex",
+            function(value, element, regexp) {
+                var re = new RegExp(regexp);
+                return this.optional(element) || re.test(value);
+            },
+            "Please enter valid number."
+        );
+
+        $('#employee_create').validate({
+            rules: {
+                mobile: {
+                    required: true,
+                    regex: /^(?:7|0|(?:\+94))[0-9]{8,9}$/
+                },
+                nic: {
+                    required: true,
+                    regex: /^([0-9]{9}[x|X|v|V]|[0-9]{12})$/
+                }
+            },
+            messages: {
+                mobile:{
+                    regex: "Please enter valid mobile number."
+                },
+                nic:{
+                    regex: "Please enter valid NIC number."
+                }
+            }
+        });
 
         //set nav active state
         $('.nav-item .collapse-item').removeClass('active');
